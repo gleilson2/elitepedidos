@@ -117,9 +117,17 @@ export const useDeliveryProducts = () => {
   try {
     console.log('✏️ Atualizando produto:', id, updates);
 
-    // 1. Remover campos indesejados
-    const { created_at, updated_at, has_complements, ...cleanUpdates } = updates as any;
+    // 1. First check if the product exists
+    const { data: existingProduct, error: checkError } = await supabase
+      .from('delivery_products')
+      .select('id')
+      .eq('id', id)
+      .maybeSingle();
 
+    if (checkError) {
+      console.error('❌ Erro ao verificar produto existente:', checkError);
+      throw new Error(`Erro ao verificar produto: ${checkError.message}`);
+    }
     // 2. Remover campos com valor undefined
     const safeUpdate = Object.fromEntries(
       Object.entries({
@@ -154,7 +162,7 @@ export const useDeliveryProducts = () => {
     }
 
     if (!data) {
-      throw new Error(`Produto com ID ${id} não foi encontrado para atualização`);
+      throw new Error(`Nenhum dado retornado após atualização do produto ${id}`);
     }
 
     console.log('✅ Produto atualizado no banco:', data);
@@ -174,7 +182,13 @@ export const useDeliveryProducts = () => {
   }
 }, []);
 
+    if (!existingProduct) {
+      console.error('❌ Produto não encontrado no banco:', id);
+      throw new Error(`Produto com ID ${id} não foi encontrado no banco de dados. O produto pode ter sido excluído ou o ID está incorreto.`);
+    }
 
+    // 2. Remover campos indesejados
+    const { created_at, updated_at, has_complements, ...cleanUpdates } = updates as any;
   const deleteProduct = useCallback(async (id: string) => {
     try {
       console.log('🗑️ Excluindo produto:', id);
@@ -242,7 +256,7 @@ export const useDeliveryProducts = () => {
                     prev.map(p => 
                       p.id === payload.new.id ? payload.new as DeliveryProduct : p
                     )
-                  );
+    // 3. Remover campos com valor undefined
                 }
                 break;
                 
@@ -256,7 +270,7 @@ export const useDeliveryProducts = () => {
                 break;
             }
           }
-        )
+    // 4. Realizar a atualização
         .subscribe((status) => {
           console.log('📡 Status da subscription:', status);
           if (status === 'SUBSCRIBED') {
@@ -269,7 +283,7 @@ export const useDeliveryProducts = () => {
     return () => {
       if (channel) {
         console.log('🔌 Desconectando subscription em tempo real...');
-        supabase.removeChannel(channel);
+        throw new Error(`Produto com ID ${id} não foi encontrado durante a atualização. O produto pode ter sido excluído por outro usuário.`);
       }
     };
   }, []);
