@@ -117,28 +117,10 @@ export const useDeliveryProducts = () => {
   try {
     console.log('✏️ Atualizando produto:', id, updates);
 
-    // 1. Verificar se o produto existe antes de tentar atualizar
-    const { data: existingProduct, error: checkError } = await supabase
-      .from('delivery_products')
-      .select('id')
-      .eq('id', id);
-
-    if (checkError && checkError.code !== 'PGRST116') {
-      console.error('❌ Erro ao verificar existência do produto:', checkError);
-      throw new Error(`Erro ao verificar produto: ${checkError.message}`);
-    }
-
-    if (!existingProduct || existingProduct.length === 0) {
-      console.error('❌ Produto não encontrado no banco:', id);
-      throw new Error(`Produto com ID ${id} não foi encontrado no banco de dados`);
-    }
-
-    console.log('✅ Produto encontrado, prosseguindo com atualização');
-
-    // 2. Remover campos indesejados
+    // 1. Remover campos indesejados
     const { created_at, updated_at, has_complements, ...cleanUpdates } = updates as any;
 
-    // 3. Remover campos com valor undefined
+    // 2. Remover campos com valor undefined
     const safeUpdate = Object.fromEntries(
       Object.entries({
         ...cleanUpdates,
@@ -152,16 +134,22 @@ export const useDeliveryProducts = () => {
       originalUpdates: updates
     });
 
-    // 4. Realizar a atualização
+    // 3. Realizar a atualização
     const { data, error } = await supabase
       .from('delivery_products')
       .update(safeUpdate)
       .eq('id', id)
       .select()
-      .maybeSingle();
+      .single();
 
     if (error) {
       console.error('❌ Erro detalhado ao atualizar produto:', error);
+      
+      // Handle specific error cases
+      if (error.code === 'PGRST116') {
+        throw new Error(`Produto com ID ${id} não foi encontrado no banco de dados`);
+      }
+      
       throw new Error(`Erro ao atualizar produto: ${error.message || 'Erro desconhecido'}`);
     }
 
