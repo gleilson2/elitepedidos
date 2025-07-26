@@ -150,7 +150,12 @@ const Store2UnifiedAttendancePage: React.FC<Store2UnifiedAttendancePageProps> = 
 
         {/* Content */}
         <div className="transition-all duration-300 print:hidden">
-          {activeTab === 'sales' && <Store2PDVSalesScreen operator={operator} scaleHook={scale} />}
+          {activeTab === 'sales' && (
+            <Store2PDVSalesScreen 
+              operator={operator} 
+              scaleHook={scale} 
+            />
+          )}
           {activeTab === 'cash' && <Store2CashRegisterMenu />}
         </div>
       </div>
