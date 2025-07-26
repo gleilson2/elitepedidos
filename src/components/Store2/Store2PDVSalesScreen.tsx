@@ -181,7 +181,6 @@ export const useStore2Products = () => {
           {
             id: 'loja2-acai-grande',
             code: 'L2AC003',
-            name: 'Açaí Grande 600ml - Loja 2',
             category: 'acai',
             is_weighable: true,
             unit_price: undefined,
