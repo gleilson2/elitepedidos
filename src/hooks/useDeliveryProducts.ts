@@ -156,8 +156,7 @@ export const useDeliveryProducts = () => {
       .from('delivery_products')
       .update(safeUpdate)
       .eq('id', id)
-      .select()
-      .single();
+      .select('*');
 
     if (error) {
       console.error('❌ Erro detalhado ao atualizar produto:', error);
@@ -170,17 +169,18 @@ export const useDeliveryProducts = () => {
       throw new Error(`Erro ao atualizar produto: ${error.message || 'Erro desconhecido'}`);
     }
 
-    if (!data) {
+    if (!data || data.length === 0) {
       throw new Error(`Nenhum dado retornado após atualização do produto ${id}`);
     }
 
-    console.log('✅ Produto atualizado no banco:', data);
+    const updatedProduct = data[0];
+    console.log('✅ Produto atualizado no banco:', updatedProduct);
 
     // Atualizar estado local
-    setProducts(prev => prev.map(p => p.id === id ? data : p));
+    setProducts(prev => prev.map(p => p.id === id ? updatedProduct : p));
 
     console.log('✅ Estado local atualizado');
-    return data;
+    return updatedProduct;
 
   } catch (err) {
     console.error('❌ Erro ao atualizar produto:', err);
