@@ -59,6 +59,57 @@ export const useStore2Products = () => {
             updated_at: new Date().toISOString()
           },
           {
+            id: 'demo-acai-1kg-loja2',
+            code: 'ACAI1KGL2',
+            name: 'Açaí 1kg (Pesável) - Loja 2',
+            category: 'acai',
+            is_weighable: true,
+            unit_price: undefined,
+            price_per_gram: 0.04499,
+            image_url: 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
+            stock_quantity: 50,
+            min_stock: 5,
+            is_active: true,
+            barcode: '',
+            description: 'Açaí tradicional vendido por peso - Loja 2',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 'demo-sorvete-300-loja2',
+            code: 'SORV300L2',
+            name: 'Sorvete 300ml - Loja 2',
+            category: 'sorvetes',
+            is_weighable: false,
+            unit_price: 14.90,
+            price_per_gram: undefined,
+            image_url: 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
+            stock_quantity: 80,
+            min_stock: 10,
+            is_active: true,
+            barcode: '',
+            description: 'Sorvete cremoso 300ml - Loja 2',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 'demo-bebida-loja2',
+            code: 'BEB001L2',
+            name: 'Água Mineral 500ml - Loja 2',
+            category: 'bebidas',
+            is_weighable: false,
+            unit_price: 3.50,
+            price_per_gram: undefined,
+            image_url: 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
+            stock_quantity: 200,
+            min_stock: 20,
+            is_active: true,
+            barcode: '',
+            description: 'Água mineral 500ml gelada - Loja 2',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+          {
             id: 'demo-acai-500-loja2',
             code: 'ACAI500L2',
             name: 'Açaí 500ml - Loja 2',
@@ -85,11 +136,71 @@ export const useStore2Products = () => {
       const { data, error } = await supabase
         .from('store2_products')
         .select('*')
-        .eq('is_active', true)
         .order('name');
 
       if (error) throw error;
-      setProducts(data || []);
+      
+      // Se não há produtos no banco, usar produtos de demonstração
+      if (!data || data.length === 0) {
+        console.warn('⚠️ Nenhum produto encontrado no banco da Loja 2 - usando produtos de demonstração');
+        const demoProducts: Store2Product[] = [
+          {
+            id: 'demo-acai-300-loja2',
+            code: 'ACAI300L2',
+            name: 'Açaí 300ml - Loja 2',
+            category: 'acai',
+            is_weighable: false,
+            unit_price: 15.90,
+            price_per_gram: undefined,
+            image_url: 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
+            stock_quantity: 100,
+            min_stock: 10,
+            is_active: true,
+            barcode: '',
+            description: 'Açaí tradicional 300ml - Loja 2',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 'demo-acai-500-loja2',
+            code: 'ACAI500L2',
+            name: 'Açaí 500ml - Loja 2',
+            category: 'acai',
+            is_weighable: false,
+            unit_price: 22.90,
+            price_per_gram: undefined,
+            image_url: 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
+            stock_quantity: 100,
+            min_stock: 10,
+            is_active: true,
+            barcode: '',
+            description: 'Açaí tradicional 500ml - Loja 2',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 'demo-acai-1kg-loja2',
+            code: 'ACAI1KGL2',
+            name: 'Açaí 1kg (Pesável) - Loja 2',
+            category: 'acai',
+            is_weighable: true,
+            unit_price: undefined,
+            price_per_gram: 0.04499,
+            image_url: 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
+            stock_quantity: 50,
+            min_stock: 5,
+            is_active: true,
+            barcode: '',
+            description: 'Açaí tradicional vendido por peso - Loja 2',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ];
+        setProducts(demoProducts);
+      } else {
+        setProducts(data);
+      }
+      
       console.log(`✅ ${data?.length || 0} produtos da Loja 2 carregados`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar produtos';
@@ -105,12 +216,30 @@ export const useStore2Products = () => {
           category: 'acai',
           is_weighable: false,
           unit_price: 15.90,
+          price_per_gram: undefined,
           image_url: 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
           stock_quantity: 100,
           min_stock: 10,
           is_active: true,
           barcode: '',
           description: 'Açaí tradicional 300ml - Loja 2',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 'demo-acai-500-loja2',
+          code: 'ACAI500L2',
+          name: 'Açaí 500ml - Loja 2',
+          category: 'acai',
+          is_weighable: false,
+          unit_price: 22.90,
+          price_per_gram: undefined,
+          image_url: 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
+          stock_quantity: 100,
+          min_stock: 10,
+          is_active: true,
+          barcode: '',
+          description: 'Açaí tradicional 500ml - Loja 2',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }
