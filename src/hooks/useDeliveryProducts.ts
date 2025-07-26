@@ -215,25 +215,6 @@ export const useDeliveryProducts = () => {
     await fetchProducts();
   }, [fetchProducts]);
 
-
-    const updatedProduct = data[0];
-    console.log('✅ Produto atualizado no banco:', updatedProduct);
-
-    // Atualizar estado local
-    setProducts(prev => prev.map(p => p.id === id ? updatedProduct : p));
-
-    console.log('✅ Estado local atualizado');
-    return updatedProduct;
-
-  } catch (err) {
-    console.error('❌ Erro ao atualizar produto:', err);
-    if (err instanceof Error) {
-      throw err;
-    }
-    throw new Error('Erro desconhecido ao atualizar produto');
-  }
-}, []);
-
   const deleteProduct = useCallback(async (id: string) => {
     try {
       console.log('🗑️ Excluindo produto:', id);
