@@ -173,14 +173,19 @@ export const useDeliveryProducts = () => {
       // No rows were updated, which means the values were already the same
       // Return the existing product with the updates applied
       console.log('ℹ️ Nenhuma linha foi atualizada - valores já eram os mesmos');
-      const existingProduct = products.find(p => p.id === id);
-      if (existingProduct) {
-        const updatedProduct = { ...existingProduct, ...safeUpdate };
-        console.log('✅ Retornando produto existente com atualizações aplicadas');
-        return updatedProduct;
-      } else {
-        throw new Error(`Produto com ID ${id} não foi encontrado no estado local`);
-      }
+      
+      // Create the updated product object from the updates
+      const updatedProduct = {
+        id,
+        ...updates,
+        updated_at: new Date().toISOString()
+      } as DeliveryProduct;
+      
+      // Update local state
+      setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updatedProduct } : p));
+      
+      console.log('✅ Retornando produto com atualizações aplicadas (sem mudanças no banco)');
+      return updatedProduct;
     }
 
     const updatedProduct = data[0];
