@@ -1,7 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 
-eximport { Package, Plus, Search, Edit, Trash2, Eye, EyeOff, FolderSync as Sync, AlertTriangle } from 'lucide-react'ebidas' | 'complementos' | 'sobremesas' | 'outros' | 'sorvetes';
+export interface Store2Product {
+  id: string;
+  code: string;
+  name: string;
+  category: 'acai' | 'bebidas' | 'complementos' | 'sobremesas' | 'outros' | 'sorvetes';
   is_weighable: boolean;
   unit_price?: number;
   price_per_gram?: number;
